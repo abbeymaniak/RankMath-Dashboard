@@ -1,0 +1,1 @@
+{"version":3,"file":"index.css","mappings":";;;AAAA;IACI,aAAa;AACjB;;AAEA;IACI,8BAA8B;AAClC;;AAEA;IACI,oBAAoB;AACxB,C","sources":["webpack://rankmath-test/./src/styles/main.css"],"sourcesContent":[".d-flex {\n    display: flex;\n}\n\n.justify-content-between {\n    justify-content: space-between;\n}\n\n.pb-2 {\n    padding-bottom: 1rem;\n}"],"names":[],"sourceRoot":""}
