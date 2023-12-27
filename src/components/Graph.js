@@ -8,15 +8,23 @@ const Graph = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `http://test.local/wp-json/react/v1/data/${selectedOption}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await window.WebGLProgram.apiFetch({
+          path: `http://test.local/wp-json/react/v1/data/${selectedOption}`,
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        // const response = await fetch(
+        //   `http://test.local/wp-json/react/v1/data/${selectedOption}`,
+        //   {
+        //     method: "GET",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //   }
+        // );
 
         const json_data = await response.json();
         console.log(json_data);
@@ -37,11 +45,17 @@ const Graph = () => {
       {data && (
         <>
           <div className="d-flex justify-content-between">
-            <h2 className="pb-2">Graph Widget</h2>
+            <h2 className="pb-2">{_("Graph Widget", "rankmath-test")}</h2>
             <select value={selectedOption} onChange={handleSelectChange}>
-              <option value="7days">Last 7days</option>
-              <option value="15days">Last 15days</option>
-              <option value="1month">Last 1month</option>
+              <option value="7days">
+                {__("Last 7 days", "rankmath-test")}
+              </option>
+              <option value="15days">
+                {__("Last 15days", "rankmath-test")}
+              </option>
+              <option value="1month">
+                {__("Last 1month", "rankmath-test")}
+              </option>
             </select>
           </div>
           <LineChart width={500} height={400} data={data}>

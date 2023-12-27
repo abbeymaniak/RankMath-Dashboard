@@ -11,7 +11,7 @@
  */
 
 if (!defined('ABSPATH')) {
-    exit;
+    wp_die(__('Do not open this file directly.', 'rankmath-test'));
 }
 
 //Basic setup
