@@ -5,7 +5,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "Abbeymaniak\\RankmathTest\\": "src/"
+      "Abbeymaniak\\RankmathTest\\": "src/",
+      "RankmathDashboard\\": "includes/"
     }
   },
   "authors": [
