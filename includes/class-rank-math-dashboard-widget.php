@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Rank Math Dashboard Widget
  *
@@ -12,7 +13,8 @@
  *
  * @package rankmath-test
  */
-class Rank_Math_Dashboard_Widget {
+class Rank_Math_Dashboard_Widget
+{
 
 	/** This is the table name for the dashboard data.
 	 *
@@ -23,27 +25,29 @@ class Rank_Math_Dashboard_Widget {
 	/**
 	 * Constructor
 	 */
-	public function __construct() {
+	public function __construct()
+	{
 		global $wpdb;
 
 		$this->table_name = $wpdb->prefix . 'rm_dashboard_data';
 
-		add_action( 'wp_dashboard_setup', array( $this, 'rankmathtest_dashboard_init' ) );
+		add_action('wp_dashboard_setup', array($this, 'rankmathtest_dashboard_init'));
 
-		if ( is_admin() && admin_url( '/' ) ) {
-			add_action( 'admin_enqueue_scripts', array( $this, 'rankmathtest_enqueue_scripts' ) );
+		if (is_admin() && admin_url('/')) {
+			add_action('admin_enqueue_scripts', array($this, 'rankmathtest_enqueue_scripts'));
 		}
-		add_action( 'rest_api_init', array( $this, 'register_custom_rest_api_route' ) );
+		add_action('rest_api_init', array($this, 'register_custom_rest_api_route'));
 	}
 
 	/** Instantiates the Class.
 	 *
 	 * @return self|null
 	 */
-	public static function get_instance(): self|null {
+	public static function get_instance(): self|null
+	{
 		static $instance = null;
 
-		if ( is_null( $instance ) ) {
+		if (is_null($instance)) {
 			$instance = new self();
 		}
 
@@ -54,15 +58,17 @@ class Rank_Math_Dashboard_Widget {
 	 *
 	 * @return void
 	 */
-	public function rankmathtest_dashboard_init(): void {
-		wp_add_dashboard_widget( 'dashboard_widget', 'Rank Math Widget', array( $this, 'rankmath_widget_init' ) );
+	public function rankmathtest_dashboard_init(): void
+	{
+		wp_add_dashboard_widget('dashboard_widget', 'Rank Math Widget', array($this, 'rankmath_widget_init'));
 	}
 
 	/** This function addes the template/main.php.
 	 *
 	 * @return void
 	 */
-	public function rankmath_widget_init(): void {
+	public function rankmath_widget_init(): void
+	{
 		require_once RANKMATHTEST__PLUGIN_DIR . 'templates/main.php';
 	}
 
@@ -70,28 +76,30 @@ class Rank_Math_Dashboard_Widget {
 	 *
 	 * @return void
 	 */
-	public function rankmathtest_enqueue_scripts(): void {
+	public function rankmathtest_enqueue_scripts(): void
+	{
 
 		$style_file_path = RANKMATHTEST__PLUGIN_DIR . '/build/index.css';
-		$style_version   = filemtime( $style_file_path );
+		$style_version   = filemtime($style_file_path);
 
-		wp_enqueue_script( 'wp-api' );
-		wp_enqueue_style( 'rankmathtest_style', RANKMATHTEST__PLUGIN_URL . '/build/index.css', array(), $style_version );
-		wp_enqueue_script( 'rankmathtest_script', RANKMATHTEST__PLUGIN_URL . '/build/index.js', array( 'wp-element', 'wp-api-fetch', 'wp-i18n', 'wp-components' ), '1.0.0', true );
+		wp_enqueue_script('wp-api');
+		wp_enqueue_style('rankmathtest_style', RANKMATHTEST__PLUGIN_URL . '/build/index.css', array(), $style_version);
+		wp_enqueue_script('rankmathtest_script', RANKMATHTEST__PLUGIN_URL . '/build/index.js', array('wp-element', 'wp-api-fetch', 'wp-i18n', 'wp-components'), '1.0.0', true);
 	}
 
 	/** This function creates the rest api endpoint for the plugin.
 	 *
 	 * @return void
 	 */
-	public function register_custom_rest_api_route(): void {
+	public function register_custom_rest_api_route(): void
+	{
 
 		register_rest_route(
 			'react/v1',
 			'/data/(?P<duration>[a-zA-Z0-9-]+)',
 			array(
 				'methods'             => 'GET',
-				'callback'            => array( $this, 'rankmathtest_get_data' ),
+				'callback'            => array($this, 'rankmathtest_get_data'),
 				'permission_callback' => '__return_true',
 			)
 		);
@@ -104,7 +112,8 @@ class Rank_Math_Dashboard_Widget {
 	 * @param string $period The period for which data needs to be fetched.
 	 * @return array An array of formatted output containing name, uv, pv, and amt.
 	 */
-	public function fetch_db( $period ): array {
+	public function fetch_db($period): array
+	{
 		global $wpdb;
 
 		$formatted_output = array();
@@ -112,16 +121,14 @@ class Rank_Math_Dashboard_Widget {
 		$table_name = $this->table_name;
 
 		$sql_query = $wpdb->prepare(
-        // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder
-			'SELECT * FROM %s WHERE period = %s',
-			$table_name,
+			"SELECT * FROM $table_name WHERE period = %s",
 			$period
 		);
 
-		$results = $wpdb->get_results( $sql_query, ARRAY_A );
+		$results = $wpdb->get_results($sql_query, ARRAY_A);
 
-		if ( $results ) {
-			foreach ( $results as $row ) {
+		if ($results) {
+			foreach ($results as $row) {
 				$formatted_output[] = array(
 					'name' => $row['name'],
 					'uv'   => $row['uv'],
@@ -139,12 +146,13 @@ class Rank_Math_Dashboard_Widget {
 	 * @param string $request This is the Url Parameter.
 	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
 	 */
-	public function rankmathtest_get_data( $request ): WP_REST_Response {
-		$duration = esc_attr( $request['duration'] );
+	public function rankmathtest_get_data($request)
+	{
+		$duration = esc_attr($request['duration']);
 
-		$response = $this->fetch_db( $duration );
+		$response = $this->fetch_db($duration);
 
-		return rest_ensure_response( $response );
+		return rest_ensure_response($response);
 	}
 }
 
